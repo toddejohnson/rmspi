@@ -1,0 +1,85 @@
+#!/usr/bin/env bash
+# <Script Name>
+# <Description what this module does>
+# Written by <Author>
+# GPL V3
+########
+
+# Source error handling, leave this in place
+source /common.sh
+install_cleanup_trap
+
+unpack /filesystem/home/pi /home/pi pi
+unpack /filesystem/home/root /root root
+unpack /filesystem/boot /boot
+
+apt-get update
+
+# in case we are building from a regular raspbian image instead of the lite one...
+remove_extra=$(remove_if_installed scratch squeak-plugins-scratch squeak-vm wolfram-engine python-minecraftpi minecraft-pi sonic-pi oracle-java8-jdk bluej libreoffice-common libreoffice-core freepats greenfoot nodered)
+echo "removing:" $remove_extra
+apt-get remove -y --purge  $remove_extra
+apt-get autoremove -y
+
+#Config for TNCPi
+sed -i 's/console=serial0,115200 //' /boot/cmdline.txt
+echo 'enable_uart=1' >> /boot/config.txt
+
+
+echo "--- Installing AX25"
+apt-get -y --force-yes install libax25 ax25-tools ax25-apps
+update-rc.d ax25 defaults
+
+
+if [ "$RMSPI_INCLUDE_RMSGW" == "yes" ]
+then
+  echo "--- Installing RMSGW"
+  
+  apt-get -y --force-yes install xutils-dev libxml2 libxml2-dev python-requests build-essential libax25-dev libx11-dev zlib1g-dev libncurses5-dev
+  
+  #  create the group for the gateway if it doesn't exist
+  grep "rmsgw:" /etc/group >/dev/null 2>&1
+  if [ $? -ne 0 ]; then
+	  echo "Creating group rmsgw..."
+	  groupadd rmsgw
+  fi
+
+  #  create the gateway user if it doesn't exist and lock the account
+  grep "rmsgw:" /etc/passwd >/dev/null 2>&1
+  if [ $? -ne 0 ]; then
+	  #
+  	# create the account
+  	#
+ 	  echo "Creating user rmsgw..."
+   	useradd -s /bin/false -g rmsgw rmsgw
+  fi
+
+  # lock the account to prevent a potential hole, unless the
+  # owner is root
+	echo "Locking user account rmsgw..."
+	passwd -l rmsgw >/dev/null
+	# while the account is locked, make the password to
+	# never expire so that cron will be happy
+	chage -E-1 rmsgw >/dev/null
+  
+  cd /usr/local/src/
+  tar xf rmsgw-${RMSPI_GWVER}.tgz
+  cd rmsgw-${RMSPI_GWVER}
+  make
+  make install
+  
+  # Add RMS_ACI to Crontab
+  echo "#6,36 *  * * *   rmsgw    /usr/local/bin/rmsgw_aci > /dev/null 2>&1" >> /etc/cron.d/rmspi
+# Install Logging
+cat << EOF > /etc/ax25/ax25d.conf
+# RMS Gate
+local0.info                     /var/log/rms
+local0.debug                    /var/log/rms.debug
+#local0.debug                   /dev/null
+# (End)
+EOF
+
+fi
+
+# Unpack root at the end, so files are modified before
+unpack /filesystem/root /

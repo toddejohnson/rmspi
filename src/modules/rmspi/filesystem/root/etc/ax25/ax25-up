@@ -1,0 +1,76 @@
+#!/bin/bash
+# ax25-up.pi
+# Ax25, rose, & mkiss - are pre-loaded via /etc/modules
+
+# Set Sysctl values
+sysctl -wq kernel.panic=30
+sysctl -wq kernel.panic_on_oops=30
+
+CALL="N0CALL"
+CALLSSID="-10"
+
+#Configure from /boot/rmspi.txt
+if [ -e "/boot/rmspi.txt" ]; then
+    source "/boot/rmspi.txt"
+fi
+
+cat << EOF > /etc/ax25/axports
+#Port	 Call		Baud	PacLen	Window	Description
+0	${CALL}${RMSSSID}	19200	256	7	Radio - ${FREQ} MHz
+EOF
+
+cat << EOF > /etc/ax25/ax25d.conf
+# /etc/ax25/ax25d.conf
+[${CALL}${RMSSSID} via 0]
+NOCALL  * * * * * * L
+N0CALL  * * * * * * L
+default * * * * * * -    rmsgw /usr/local/bin/rmsgw rmsgw -P 0 %U
+# /etc/ax25/ax25d.conf (End)
+EOF
+# Port0 (Start)
+echo "Start Port 0"
+
+# Attach KISS-device /dev/ttyUSB0 to Port 0
+if [ -d /dev/ttyUSB0 ]
+then
+  /usr/sbin/kissattach /dev/ttyUSB0 0 44.128.1.1 >/tmp/ax25-config.tmp
+else
+  /sr/sbin/kissattach /dev/ttyAMA0 0 44.128.1.1 >/tmp/ax25-config.tmp
+fi
+  awk '/device/ { print $7 }' /tmp/ax25-config.tmp > /tmp/ax25-config-tmp
+  read Device < /tmp/ax25-config-tmp
+
+# Install Parameter: P=128, W=10, TX-Delay=200
+  /usr/sbin/kissparms -p 0 -r 128 -s 10 -l 20 -t 250
+
+# Parms for a USER Port
+echo 3000    > t1_timeout		# (Frack) /1000 = ? Sec
+echo 1000    > t2_timeout 		# (RESPtime) /1000 = ? sec
+echo 300000  > t3_timeout 		# (Check) /6000 = ? Min
+echo 900000  > idle_timeout		# Idle Timer /6000 = ? min
+echo 5       > standard_window_size	# Outstanding Frames
+echo 8       > maximum_retry_count	# Max Retrys
+echo 256     > maximum_packet_length	# Paclen
+echo 0       > ax25_default_mode   
+echo 0       > ip_default_mode
+echo 0       > backoff_type
+echo 2       > connect_mode
+#echo 180000 > dama_slave_timeout
+echo 32      > extended_window_size
+echo 0       > protocol
+# Port0 (End)
+
+# Start "Other" Services
+
+# Open Listen on Term 11
+# /usr/bin/axlisten -artc > /dev/tty11 &
+
+# Enable External Logons
+  /usr/sbin/ax25d &
+  echo "ax25d started"
+
+# Start Mheard daemon
+ /usr/sbin/mheardd -f -n 20
+  echo "mheardd Started"
+
+# AX25-up (End)

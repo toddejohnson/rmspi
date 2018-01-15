@@ -1,0 +1,7 @@
+# Enter your callsign that will be used for ports in software
+CALL="N0CALL"
+# Enter the SSID to be used for RMS
+RMSSSID="-10"
+# Frequency radio is on
+#  For reporting/descriptions only you have to tune your radio!
+FREQ="146.610"
