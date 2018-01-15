@@ -29,31 +29,20 @@ echo 'enable_uart=1' >> /boot/config.txt
 
 echo "--- Installing AX25"
 apt-get -y install libax25 ax25-tools ax25-apps
-update-rc.d ax25 defaults
+
 
 
 if [ "$RMSPI_INCLUDE_RMSGW" == "yes" ]
 then
   echo "--- Installing RMSGW"
   
-  apt-get -y install xutils-dev libxml2 libxml2-dev python-requests build-essential libax25-dev libx11-dev zlib1g-dev libncurses5-dev
-  
-  #  create the group for the gateway if it doesn't exist
-  grep "rmsgw:" /etc/group >/dev/null 2>&1
-  if [ $? -ne 0 ]; then
-	  echo "Creating group rmsgw..."
-	  groupadd rmsgw
-  fi
+  #  create the group for the gateway
+  echo "Creating group rmsgw..."
+	groupadd rmsgw
 
-  #  create the gateway user if it doesn't exist and lock the account
-  grep "rmsgw:" /etc/passwd >/dev/null 2>&1
-  if [ $? -ne 0 ]; then
-	  #
-  	# create the account
-  	#
- 	  echo "Creating user rmsgw..."
-   	useradd -s /bin/false -g rmsgw rmsgw
-  fi
+  #  create the gateway user
+  echo "Creating user rmsgw..."
+ 	useradd -s /bin/false -g rmsgw rmsgw
 
   # lock the account to prevent a potential hole, unless the
   # owner is root
@@ -63,7 +52,11 @@ then
 	# never expire so that cron will be happy
 	chage -E-1 rmsgw >/dev/null
   
-  unpack /filesystem/src/rmsgw-${RMSPI_GWVER}.tgz /usr/local/src root
+  echo "Installing RMSGW Deps"
+  apt-get -y install xutils-dev libxml2 libxml2-dev python-requests build-essential libax25-dev libx11-dev zlib1g-dev libncurses5-dev
+  echo "Deps Installed"
+  
+  unpack /filesystem/src-rmsgw /usr/local/src root
   pushd  /usr/local/src/
     tar xf rmsgw-${RMSPI_GWVER}.tgz
     pushd rmsgw-${RMSPI_GWVER}
@@ -86,3 +79,5 @@ fi
 
 # Unpack root at the end, so files are modified before
 unpack /filesystem/root /
+
+update-rc.d ax25 defaults
