@@ -5,3 +5,5 @@ RMSSSID="-10"
 # Frequency radio is on
 #  For reporting/descriptions only you have to tune your radio!
 FREQ="146.610"
+GRIDSQ="AA00aa"
+

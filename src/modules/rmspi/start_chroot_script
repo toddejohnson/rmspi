@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# <Script Name>
-# <Description what this module does>
-# Written by <Author>
+# start_chroot_script
+# 
+# Written by Todd E Johnson <todd@toddejohnson.net>
 # GPL V3
 ########
 
@@ -9,9 +9,10 @@
 source /common.sh
 install_cleanup_trap
 
-unpack /filesystem/home/pi /home/pi pi
-unpack /filesystem/home/root /root root
+#unpack /filesystem/home/pi /home/pi pi
+#unpack /filesystem/home/root /root root
 unpack /filesystem/boot /boot
+
 
 apt-get update
 
@@ -27,7 +28,7 @@ echo 'enable_uart=1' >> /boot/config.txt
 
 
 echo "--- Installing AX25"
-apt-get -y --force-yes install libax25 ax25-tools ax25-apps
+apt-get -y install libax25 ax25-tools ax25-apps
 update-rc.d ax25 defaults
 
 
@@ -35,7 +36,7 @@ if [ "$RMSPI_INCLUDE_RMSGW" == "yes" ]
 then
   echo "--- Installing RMSGW"
   
-  apt-get -y --force-yes install xutils-dev libxml2 libxml2-dev python-requests build-essential libax25-dev libx11-dev zlib1g-dev libncurses5-dev
+  apt-get -y install xutils-dev libxml2 libxml2-dev python-requests build-essential libax25-dev libx11-dev zlib1g-dev libncurses5-dev
   
   #  create the group for the gateway if it doesn't exist
   grep "rmsgw:" /etc/group >/dev/null 2>&1
@@ -62,16 +63,18 @@ then
 	# never expire so that cron will be happy
 	chage -E-1 rmsgw >/dev/null
   
-  cd /usr/local/src/
-  tar xf rmsgw-${RMSPI_GWVER}.tgz
-  cd rmsgw-${RMSPI_GWVER}
-  make
-  make install
-  
+  unpack /filesystem/src/rmsgw-${RMSPI_GWVER}.tgz /usr/local/src root
+  pushd  /usr/local/src/
+    tar xf rmsgw-${RMSPI_GWVER}.tgz
+    pushd rmsgw-${RMSPI_GWVER}
+      make
+      make install
+    popd
+  popd
   # Add RMS_ACI to Crontab
   echo "#6,36 *  * * *   rmsgw    /usr/local/bin/rmsgw_aci > /dev/null 2>&1" >> /etc/cron.d/rmspi
-# Install Logging
-cat << EOF > /etc/ax25/ax25d.conf
+  # Install Logging
+  cat << EOF > /etc/ax25/ax25d.conf
 # RMS Gate
 local0.info                     /var/log/rms
 local0.debug                    /var/log/rms.debug
