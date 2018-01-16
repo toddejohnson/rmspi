@@ -56,10 +56,9 @@ then
   apt-get -y install xutils-dev libxml2 libxml2-dev python-requests build-essential libax25-dev libx11-dev zlib1g-dev libncurses5-dev
   echo "Deps Installed"
   
-  unpack /filesystem/src-rmsgw /usr/local/src root
   pushd  /usr/local/src/
-    tar xf rmsgw-${RMSPI_GWVER}.tgz
-    pushd rmsgw-${RMSPI_GWVER}
+    gitclone RMSPI_RMSGW_REPO rmsgw
+    pushd rmsgw
       make
       make install
     popd

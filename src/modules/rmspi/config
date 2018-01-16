@@ -1,2 +1,4 @@
+RMSPI_RMSGW_REPO_SHIP="https://github.com/toddejohnson/rmsgw.git"
+RMSPI_RMSGW_REPO_BUILD=
+RMSPI_RMSGW_REPO_BRANCH=master
 RMSPI_INCLUDE_RMSGW="yes"
-RMSPI_GWVER="2.4.0-182"
