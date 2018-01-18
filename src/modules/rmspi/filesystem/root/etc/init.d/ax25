@@ -16,7 +16,7 @@
 #. /lib/lsb/init-functions
 
 NAME=Ax25			# Process name ( For display )
-DAEMON=/usr/local/etc/ax25/ax25-up
+DAEMON=/etc/ax25/ax25-up
 PIDFILE=/var/run/ax25.pid 	# pid file for the daemon
 
 test -x $DAEMON || exit 5 # Exit - Pgm Not Installed.

@@ -5,5 +5,11 @@ RMSSSID="-10"
 # Frequency radio is on
 #  For reporting/descriptions only you have to tune your radio!
 FREQ="146.610"
+# Grid square for RMS GW
 GRIDSQ="AA00aa"
-
+# Serial port of TNC
+AX25DEV="/dev/ttyAMA0"
+# IP of TNC Dev
+AX25IP="44.128.1.10"
+# Listen on tty11
+AX25LISTEN="yes"
