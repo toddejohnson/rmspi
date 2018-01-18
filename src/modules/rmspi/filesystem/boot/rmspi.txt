@@ -5,6 +5,7 @@ RMSSSID="-10"
 # Frequency radio is on
 #  For reporting/descriptions only you have to tune your radio!
 FREQ="146.610"
+RMSFREQ="145610000"
 # Grid square for RMS GW
 GRIDSQ="AA00aa"
 # Serial port of TNC
@@ -13,3 +14,16 @@ AX25DEV="/dev/ttyAMA0"
 AX25IP="44.128.1.10"
 # Listen on tty11
 AX25LISTEN="yes"
+# Banner for RMS
+RMSBANNER=Welcome to the N0CALL Winlink 2000 RMS Gateway. City, State"
+RMSPASSWORD=""
+RMSNAME="First Last"
+RMSADDR="123 Street"
+RMSADDR2=""
+RMSADDRCITY="Springfield"
+RMSADDRST="IL"
+RMSADDRCOUNTRY="US"
+RMSADDRZIP=62712
+RMSEMAIL="some@email.com"
+RMSPHONE=""
+RMSWEB=""

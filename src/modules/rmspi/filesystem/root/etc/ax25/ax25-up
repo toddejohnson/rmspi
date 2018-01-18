@@ -28,6 +28,86 @@ N0CALL  * * * * * * L
 default * * * * * * -    rmsgw /usr/local/bin/rmsgw rmsgw -P 0 %U
 # /etc/ax25/ax25d.conf (End)
 EOF
+
+cat << EOF > /etc/rmsgw/gateway.conf
+GWCALL=${CALL}${RMSSSID}
+GRIDSQUARE=${GRIDSQ}
+CHANNELFILE=/etc/rmsgw/channels.xml
+BANNERFILE=/etc/rmsgw/banner
+LOGFACILITY=LOCAL0
+LOGMASK=INFO
+PYTHON=/usr/bin/python
+EOF
+
+cat "${RMSBANNER}" > /etc/rmsgw/banner
+
+cat << EOF > /etc/rmsgw/channels.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<rmschannels xmlns="http://www.namespace.org"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="file:///etc/rmsgw/channels.xsd">
+  <channel name="0" type="ax25" active="yes">
+    <basecall>${CALL}</basecall>
+    <callsign>${CALL}${RMSSSID}</callsign>
+    <password>${RMSPASSWORD}</password>
+    <gridsquare>${GRIDSQ}</gridsquare>
+    <frequency>${RMSFREQ}</frequency>
+    <mode>0</mode>
+    <autoonly>0</autoonly>
+    <baud>1200</baud>
+    <power>50</power>
+    <height>10</height>
+    <gain>0</gain>
+    <direction>0</direction>
+    <hours>24/7</hours>
+    <groupreference>1</groupreference>
+    <servicecode>PUBLIC</servicecode>
+    <statuschecker>
+      /usr/local/bin/rmschanstat $type $name $callsign
+    </statuschecker>
+  </channel>
+</rmschannels>
+EOF
+
+cat << EOF > /etc/rmsgw/sysop.xml
+<sysops>
+  <sysop>
+    <Callsign>${CALL}</Callsign>
+    <GridSquare>${GRIDSQ}</GridSquare>
+    <SysopName>${RMSNAME}</SysopName>
+    <StreetAddress1>${RMSADDR}</StreetAddress1>
+    <StreetAddress2>${RMSADDR2}</StreetAddress2>
+    <City>${RMSADDRCITY}</City>
+    <State>${RMSADDRST}</State>
+    <Country>${RMSCOUNTRY}</Country>
+    <PostalCode>${RMSZIP}</PostalCode>
+    <Email>${RMSEMAIL}</Email>
+    <Phones>${RMSPHONE}</Phones>
+    <Website>${RMSWEB}</Website>
+    <Comments />
+  </sysop>
+</sysops>
+EOF
+cat << EOF > /etc/rmsgw/new-sysop.xml
+<sysops>
+  <sysop>
+    <Callsign>${CALL}</Callsign>
+    <GridSquare>${GRIDSQ}</GridSquare>
+    <SysopName>${RMSNAME}</SysopName>
+    <StreetAddress1>${RMSADDR}</StreetAddress1>
+    <StreetAddress2>${RMSADDR2}</StreetAddress2>
+    <City>${RMSADDRCITY}</City>
+    <State>${RMSADDRST}</State>
+    <Country>${RMSCOUNTRY}</Country>
+    <PostalCode>${RMSZIP}</PostalCode>
+    <Email>${RMSEMAIL}</Email>
+    <Phones>${RMSPHONE}</Phones>
+    <Website>${RMSWEB}</Website>
+    <Comments />
+  </sysop>
+</sysops>
+EOF
+
 # Port0 (Start)
 echo "Start Port 0"
 
