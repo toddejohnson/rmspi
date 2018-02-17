@@ -80,8 +80,8 @@ fi
 # Unpack root at the end, so files are modified before
 unpack /filesystem/root /
 
-# This needs moved to systemd
-update-rc.d ax25 defaults
+echo "---Enable AX.25"
+systemctl_if_exists enable ax25.service
 
 echo "---Enable WPA"
 systemctl_if_exists enable check_wpa_link.service

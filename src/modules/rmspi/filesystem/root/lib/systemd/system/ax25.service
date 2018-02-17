@@ -1,0 +1,20 @@
+[Unit]
+Description=AX.25 interface
+After=network.target
+
+[Service]
+#EnvironmentFile=/etc/ax25
+Type=forking
+Restart=no
+TimeoutSec=0
+IgnoreSIGPIPE=no
+KillMode=process
+GuessMainPID=no
+RemainAfterExit=yes
+SysVStartPriority=12
+ExecStart=/etc/ax25/ax25-up
+ExecStop=/etc/ax25/ax25-down
+
+[Install]
+WantedBy=default.target 
+
