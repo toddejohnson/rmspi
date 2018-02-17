@@ -139,7 +139,7 @@ echo 0       > protocol
 # Start "Other" Services
 
 # Open Listen on Term 11
-if [ "${AX25LISTEN}" == "yes"]
+if [ "${AX25LISTEN}" == "yes" ]
 then
   /usr/bin/axlisten -artc > /dev/tty11 &
 fi

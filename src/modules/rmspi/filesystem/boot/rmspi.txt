@@ -15,7 +15,7 @@ AX25IP="44.128.1.10"
 # Listen on tty11
 AX25LISTEN="yes"
 # Banner for RMS
-RMSBANNER=Welcome to the N0CALL Winlink 2000 RMS Gateway. City, State"
+RMSBANNER="Welcome to the N0CALL Winlink 2000 RMS Gateway. City, State"
 RMSPASSWORD=""
 RMSNAME="First Last"
 RMSADDR="123 Street"
