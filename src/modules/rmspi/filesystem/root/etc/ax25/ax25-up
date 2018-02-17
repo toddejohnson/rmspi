@@ -63,7 +63,7 @@ cat << EOF > /etc/rmsgw/channels.xml
     <groupreference>1</groupreference>
     <servicecode>PUBLIC</servicecode>
     <statuschecker>
-      /usr/local/bin/rmschanstat $type $name $callsign
+      /usr/local/bin/rmschanstat \$type \$name \$callsign
     </statuschecker>
   </channel>
 </rmschannels>
