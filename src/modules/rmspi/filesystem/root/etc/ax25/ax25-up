@@ -144,6 +144,13 @@ then
   /usr/bin/axlisten -artc > /dev/tty11 &
 fi
 
+# Set Beacon for Port 0 
+/usr/sbin/beacon \
+	-d "BEACON" \
+	-t 15 \
+	0 \
+	"RMS Gate ${CALL}${RMSSSID} ${RMSADDRCITY}, ${RMSADDRST}"
+
 # Enable External Logons
   /usr/sbin/ax25d -l &
   echo "ax25d started"
