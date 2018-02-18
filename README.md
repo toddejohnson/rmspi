@@ -23,4 +23,4 @@ This is based upon:
 * rmsgw from https://groups.yahoo.com/neo/groups/LinuxRMS forked to https://github.com/toddejohnson/rmsgw
 * PAT from http://getpat.io
 
-
+RMSPi is not affiliated with The Winlink Development Team nor the Winlink 2000 project [http://winlink.org].
