@@ -7,7 +7,7 @@ Currently we only support the [TNCPi](https://tnc-x.com/TNCPi.htm) as that is th
 ## Download
 Downloads are available as releases from [releases](https://github.com/toddejohnson/rmspi/releases)
 
-## Instalation
+## Installation
 1. Download the file from [releases](https://github.com/toddejohnson/rmspi/releases)
 2. Unzip the image and install it to an sd card [like any other Raspberry Pi image](https://www.raspberrypi.org/documentation/installation/installing-images/README.md)
 3. Configure your WiFi by editing rmspi-wpa-supplicant.txt or rmspi-network.txt on the root(boot partition) of the flashed card when using it like a thumb drive
