@@ -5,10 +5,10 @@ Winlink Linux RMS Server Raspberry Pi Distribution. The goal is to make an easy 
 Currently we only support the [TNCPi](https://tnc-x.com/TNCPi.htm) as that is the hardware I have access to.  Others can be supported as time/equipment allow
 
 ## Download
-Downloads are available as releases from 
+Downloads are available as releases from [releases](https://github.com/toddejohnson/rmspi/releases)
 
 ## Instalation
-1. Download the file from 
+1. Download the file from [releases](https://github.com/toddejohnson/rmspi/releases)
 2. Unzip the image and install it to an sd card [like any other Raspberry Pi image](https://www.raspberrypi.org/documentation/installation/installing-images/README.md)
 3. Configure your WiFi by editing rmspi-wpa-supplicant.txt or rmspi-network.txt on the root(boot partition) of the flashed card when using it like a thumb drive
 4. Configure RMS/PAT settings by editing rmspi.txt on the root(boot partition) of the flashed card
