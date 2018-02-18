@@ -108,6 +108,42 @@ cat << EOF > /etc/rmsgw/new-sysop.xml
 </sysops>
 EOF
 
+[ -d /home/pi/.wl2k ] || mkdir -p /home/pi/.wl2k
+cat << EOF > /home/pi/.wl2k/config.json
+{
+  "mycall": "${CALL}",
+  "secure_login_password": "${RMSPASSWORD}",
+  "auxiliary_addresses": [],
+  "locator": "${GRIDSQ}",
+  "http_addr": "0.0.0.0:8080",
+  "motd": [
+    "Open source Winlink client - getpat.io"
+  ],
+  "connect_aliases": {
+    "telnet": "telnet://{mycall}:CMSTelnet@cms.winlink.org:8772/wl2k",
+    "n9puz-10": "ax25://0/N9PUZ-10"
+  },
+  "listen": ["ax25"],
+  "hamlib_rigs": {},
+  "ax25": {
+    "port": "0",
+    "beacon": {
+      "every": 3600,
+      "message": "Winlink P2P",
+      "destination": "IDENT"
+    },
+    "rig": ""
+  },
+  "telnet": {
+    "listen_addr": ":8774",
+    "password": ""
+  },
+  "schedule": {},
+  "version_reporting_disabled": false
+}
+EOF
+chown -R pi:pi /home/pi/.wl2k/
+
 # Port0 (Start)
 echo "Start Port 0"
 
