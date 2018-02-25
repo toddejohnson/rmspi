@@ -109,6 +109,13 @@ cat << EOF > /etc/rmsgw/new-sysop.xml
 EOF
 
 [ -d /home/pi/.wl2k ] || mkdir -p /home/pi/.wl2k
+if [ -z ${PATSCHEDULE} ]
+then
+  SCHED="\"schedule\": {\"${PATSCHEDULE}\": \"connect ${PATSCHEDULECONNECT}\"},"
+else
+  SCHED="\"schedule\": {},"
+fi
+
 cat << EOF > /home/pi/.wl2k/config.json
 {
   "mycall": "${CALL}",
@@ -138,7 +145,7 @@ cat << EOF > /home/pi/.wl2k/config.json
     "listen_addr": ":8774",
     "password": ""
   },
-  "schedule": {},
+  ${SCHED}
   "version_reporting_disabled": false
 }
 EOF
