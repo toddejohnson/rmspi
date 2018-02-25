@@ -3,7 +3,7 @@ CALL="N0CALL"
 # Enter the SSID to be used for RMS
 RMSSSID="-10"
 # Frequency radio is on
-#  For reporting/descriptions only you have to tune your radio!
+# For reporting/descriptions only you have to tune your radio!
 FREQ="146.610"
 RMSFREQ="145610000"
 # Grid square for RMS GW
@@ -12,18 +12,35 @@ GRIDSQ="AA00aa"
 AX25DEV="/dev/ttyAMA0"
 # IP of TNC Dev
 AX25IP="44.128.1.10"
-# Listen on tty11
+# Output axlisten on tty11
 AX25LISTEN="yes"
 # Banner for RMS
 RMSBANNER="Welcome to the N0CALL Winlink 2000 RMS Gateway. City, State"
+# Winlink Secure Password
 RMSPASSWORD=""
+## The below will be published in the RMS Sysop database
+# Name
 RMSNAME="First Last"
+# Address
 RMSADDR="123 Street"
+# Address 2
 RMSADDR2=""
+# City
 RMSADDRCITY="Springfield"
+# State 
 RMSADDRST="IL"
+# Country Code
 RMSADDRCOUNTRY="US"
+# Zip Code
 RMSADDRZIP=62712
+# Email Address
 RMSEMAIL="some@email.com"
+# Phone Number
 RMSPHONE=""
+# Website
 RMSWEB=""
+##PAT Settings
+# Schedule to check for mail leave blank or comment to disable
+#PATSCHEDULE="*/30 * * * *"
+# Where to connect to on the schedule
+PATSCHEDULECONNECT="telnet"
