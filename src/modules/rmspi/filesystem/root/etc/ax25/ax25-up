@@ -39,7 +39,7 @@ LOGMASK=INFO
 PYTHON=/usr/bin/python
 EOF
 
-cat "${RMSBANNER}" > /etc/rmsgw/banner
+echo "${RMSBANNER}" > /etc/rmsgw/banner
 
 cat << EOF > /etc/rmsgw/channels.xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -109,11 +109,11 @@ cat << EOF > /etc/rmsgw/new-sysop.xml
 EOF
 
 [ -d /home/pi/.wl2k ] || mkdir -p /home/pi/.wl2k
-if [ -z ${PATSCHEDULE} ]
+if [ -z ${PATSCHEDULE+x} ]
 then
-  SCHED="\"schedule\": {\"${PATSCHEDULE}\": \"connect ${PATSCHEDULECONNECT}\"},"
-else
   SCHED="\"schedule\": {},"
+else
+  SCHED="\"schedule\": {\"${PATSCHEDULE}\": \"connect ${PATSCHEDULECONNECT}\"},"
 fi
 
 cat << EOF > /home/pi/.wl2k/config.json
