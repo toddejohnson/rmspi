@@ -91,9 +91,6 @@ unpack /filesystem/root /
 echo "---Enable AX.25"
 systemctl_if_exists enable ax25.service
 
-echo "---Enable WPA"
-systemctl_if_exists enable check_wpa_link.service
-
 ### Fix SSH
 echo "IPQoS 0x00" >> /etc/ssh/sshd_config
 
