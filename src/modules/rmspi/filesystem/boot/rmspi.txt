@@ -44,3 +44,5 @@ RMSWEB=""
 #PATSCHEDULE="*/30 * * * *"
 # Where to connect to on the schedule
 PATSCHEDULECONNECT="telnet"
+# Port where PAT listens
+PATPORT=8080

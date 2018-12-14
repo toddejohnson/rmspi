@@ -122,7 +122,7 @@ cat << EOF > /home/pi/.wl2k/config.json
   "secure_login_password": "${RMSPASSWORD}",
   "auxiliary_addresses": [],
   "locator": "${GRIDSQ}",
-  "http_addr": "0.0.0.0:8080",
+  "http_addr": "0.0.0.0:${PATPORT}",
   "motd": [
     "Open source Winlink client - getpat.io"
   ],
