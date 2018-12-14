@@ -1,3 +1,3 @@
 export DIST_NAME=RMSPi
 export DIST_VERSION=0.3
-export MODULES="base(network,rmspi)"
+export MODULES="base(network,disable-services(auto-hotspot),rmspi)"
