@@ -17,7 +17,7 @@ echo "Configured for ${CALL}${RMSSSID}"
 
 cat << EOF > /etc/ax25/axports
 #Port	 Call		Baud	PacLen	Window	Description
-0	${CALL}		19200	256	7	Radio - ${FREQ} MHz
+0	${CALL}		${AX25BAUD}	256	7	Radio - ${FREQ} MHz
 EOF
 
 cat << EOF > /etc/ax25/ax25d.conf

@@ -10,6 +10,8 @@ RMSFREQ="145610000"
 GRIDSQ="AA00aa"
 # Serial port of TNC
 AX25DEV="/dev/ttyAMA0"
+# Baud of above serial port
+AX25BAUD=19200
 # IP of TNC Dev
 AX25IP="44.128.1.10"
 # Output axlisten on tty11
