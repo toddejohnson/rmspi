@@ -191,6 +191,7 @@ fi
 
 # Set Beacon for Port 0 
 /usr/sbin/beacon \
+  -c ${CALL}${RMSSSID}
 	-d "BEACON" \
 	-t ${BEACONINT} \
 	0 \
