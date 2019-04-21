@@ -48,3 +48,5 @@ RMSWEB=""
 PATSCHEDULECONNECT="telnet"
 # Port where PAT listens
 PATPORT=8080
+# Beacon interval in minutes. Set higher to keep Frequency clearer for traffic
+BEACONINT=60

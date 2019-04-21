@@ -6,6 +6,8 @@
 sysctl -wq kernel.panic=30
 sysctl -wq kernel.panic_on_oops=30
 
+# Set defaults
+BEACONINT=60
 
 #Configure from /boot/rmspi.txt
 if [ -e "/boot/rmspi.txt" ]; then
@@ -135,7 +137,7 @@ cat << EOF > /home/pi/.wl2k/config.json
   "ax25": {
     "port": "0",
     "beacon": {
-      "every": 3600,
+      "every": $(( BEACONINT * 60 )),
       "message": "Winlink P2P",
       "destination": "IDENT"
     },
@@ -190,7 +192,7 @@ fi
 # Set Beacon for Port 0 
 /usr/sbin/beacon \
 	-d "BEACON" \
-	-t 15 \
+	-t ${BEACONINT} \
 	0 \
 	"RMS Gate ${CALL}${RMSSSID} ${RMSADDRCITY}, ${RMSADDRST}"
 
