@@ -14,7 +14,9 @@ if [ -e "/boot/rmspi.txt" ]; then
     echo "Using config from /boot/rmspi.txt"
     source "/boot/rmspi.txt"
 fi
-
+[ -z "$CALL" ] && echo "Missing CALL" && exit 1
+[[ "$CALL" == "N0CALL" ]] && echo "Please configure call" && exit 1
+[ -z "$AX25BAUD" ] && echo "Incorrect AX25BAUD" && exit 1
 echo "Configured for ${CALL}${RMSSSID}"
 
 cat << EOF > /etc/ax25/axports
