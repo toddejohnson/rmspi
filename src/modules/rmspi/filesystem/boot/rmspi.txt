@@ -48,5 +48,10 @@ RMSWEB=""
 PATSCHEDULECONNECT="telnet"
 # Port where PAT listens
 PATPORT=8080
+PATCONNECTALIAS='
+    "telnet": "telnet://{mycall}:CMSTelnet@cms.winlink.org:8772/wl2k",
+    "N9PUZ-10": "ax25://0/N9PUZ-10",
+    "KD9ANU-10": "ax25://0/KD9ANU-10/WD9FMB-1"
+'
 # Beacon interval in minutes. Set higher to keep Frequency clearer for traffic
 BEACONINT=60

@@ -129,8 +129,7 @@ cat << EOF > /home/pi/.wl2k/config.json
     "Open source Winlink client - getpat.io"
   ],
   "connect_aliases": {
-    "telnet": "telnet://{mycall}:CMSTelnet@cms.winlink.org:8772/wl2k",
-    "n9puz-10": "ax25://0/N9PUZ-10"
+    ${PATCONNECTALIAS}
   },
   "listen": ["ax25"],
   "hamlib_rigs": {},
@@ -191,7 +190,7 @@ fi
 
 # Set Beacon for Port 0 
 /usr/sbin/beacon \
-  -c ${CALL}${RMSSSID}
+  -c ${CALL}${RMSSSID}\
 	-d "BEACON" \
 	-t ${BEACONINT} \
 	0 \
