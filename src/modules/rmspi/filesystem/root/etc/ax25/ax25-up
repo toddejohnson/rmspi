@@ -154,10 +154,11 @@ cat << EOF > /home/pi/.wl2k/config.json
 EOF
 chown -R pi:pi /home/pi/.wl2k/
 
-if [ -z ${XYLCALL} ]
+if [ -z "${XYLCALL}" ]
 then
   systemctl disable pat@xyl.service
 else
+  systemctl enable pat@xyl.service
   [ -d /home/xyl/.wl2k ] || mkdir -p /home/xyl/.wl2k
 
   cat << EOF > /home/xyl/.wl2k/config.json
