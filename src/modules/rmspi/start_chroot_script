@@ -77,12 +77,19 @@ EOF
 
 fi
 
+if [ "$RMSPI_XYL" == "yes" ]
+then
+   	useradd -G pi,adm,dialout,cdrom,sudo,audio,video,plugdev,games,users,input,netdev,gpio,i2c,spi xyl
+fi
 if [ "$RMSPI_INCLUDE_PAT" == "yes" ]
 then
   wget -O pat_${RMSPI_PAT_VER}_linux_armhf.deb https://github.com/la5nta/pat/releases/download/v${RMSPI_PAT_VER}/pat_${RMSPI_PAT_VER}_linux_armhf.deb
   dpkg -i pat_${RMSPI_PAT_VER}_linux_armhf.deb
   systemctl_if_exists enable pat@pi.service
-
+  if [ "$RMSPI_XYL" == "yes" ]
+  then
+    systemctl_if_exists enable pat@xyl.service
+  fi
 fi
 
 # Unpack root at the end, so files are modified before

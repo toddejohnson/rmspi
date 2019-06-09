@@ -59,3 +59,10 @@ PATCONNECTALIAS='
 '
 # Beacon interval in minutes. Set higher to keep Frequency clearer for traffic
 BEACONINT=60
+# XYL Configuration(or 2nd Winlink account)
+# Callsign of the 2nd account
+#XYLCALL=
+# Winlink Secure Password
+#XYLRMSPASSWORD=
+# Port where PAT listens
+XYLPATPORT=$(( PATPORT + 1 ))
