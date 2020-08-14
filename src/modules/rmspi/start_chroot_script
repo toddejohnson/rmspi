@@ -54,12 +54,14 @@ then
 	chage -E-1 rmsgw >/dev/null
   
   echo "Installing RMSGW Deps"
-  apt-get -y install xutils-dev libxml2 libxml2-dev python-requests build-essential libax25-dev libx11-dev zlib1g-dev libncurses5-dev
+  apt-get -y install xutils-dev libxml2 libxml2-dev python-requests build-essential libax25-dev libx11-dev zlib1g-dev libncurses5-dev binutils make csh g++ sed gawk autoconf automake autotools-dev
   echo "Deps Installed"
   
   pushd  /home/pi/
     gitclone RMSPI_RMSGW_REPO rmsgw
     pushd rmsgw
+      sudo -u pi ./autogen.sh
+      sudo -u pi ./configure
       sudo -u pi make
       make install
     popd
