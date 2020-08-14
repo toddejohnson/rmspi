@@ -1,5 +1,5 @@
 # RMS Pi
-Winlink Linux RMS Server Raspberry Pi Distribution. The goal is to make an easy to install/deploy winlink gateway/client in one package.  We use [LinuxRMS](https://github.com/toddejohnson/rmsgw) and [PAT](http://getpat.io) as the core. 
+Winlink Linux RMS Server Raspberry Pi Distribution. The goal is to make an easy to install/deploy winlink gateway/client in one package.  We use [LinuxRMS](https://github.com/nwdigitalradio/rmsgw) and [PAT](http://getpat.io) as the core. 
 
 ## Supported TNC/Devices
 Currently we only support the [TNCPi](https://tnc-x.com/TNCPi.htm) as that is the hardware I have access to.  Others can be supported as time/equipment allow
@@ -20,7 +20,7 @@ The pat interface is available at http://rmspi.local:8080
 This is based upon:
 * CustomPiOS/OctoPi distro builder https://github.com/guysoft/CustomPiOS
 * K4GBB's how to http://k4gbb.no-ip.org/docs/raspberry.html 
-* rmsgw from https://groups.yahoo.com/neo/groups/LinuxRMS forked to https://github.com/toddejohnson/rmsgw
+* rmsgw from https://groups.yahoo.com/neo/groups/LinuxRMS or https://github.com/nwdigitalradio/rmsgw
 * PAT from http://getpat.io
 
 RMSPi is not affiliated with The Winlink Development Team nor the Winlink 2000 project [http://winlink.org].
