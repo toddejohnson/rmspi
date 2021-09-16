@@ -49,13 +49,8 @@ PATSCHEDULECONNECT="telnet"
 # Port where PAT listens
 PATPORT=8080
 # Pat Connections to prefill in the connect dropdown
-#   Keep the telnet line to maintain internet checking which is usefull to test your IP connenction 
-#   Next is a direct ax25 connection via Gateway N9PUZ-10
-#   Next we connect to KD9ANU-10 VIA WD9FMB-1 digipeater
 PATCONNECTALIAS='
-    "telnet": "telnet://{mycall}:CMSTelnet@cms.winlink.org:8772/wl2k",
-    "N9PUZ-10": "ax25://0/N9PUZ-10",
-    "KD9ANU-10": "ax25://0/WD9FMB-1/KD9ANU-10"
+    "telnet": "telnet://{mycall}:CMSTelnet@cms.winlink.org:8772/wl2k"
 '
 # Beacon interval in minutes. Set higher to keep Frequency clearer for traffic
 BEACONINT=60
