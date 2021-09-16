@@ -21,7 +21,7 @@ remove_extra=$(remove_if_installed scratch squeak-plugins-scratch squeak-vm wolf
 echo "removing:" $remove_extra
 apt-get remove -y --purge  $remove_extra
 apt-get autoremove -y
-apt-get -y install git
+apt-get -y install git tmux
 
 #Config for TNCPi
 sed -i 's/console=serial0,115200 //' /boot/cmdline.txt
