@@ -87,6 +87,7 @@ if [ "$RMSPI_INCLUDE_PAT" == "yes" ]
 then
   wget -O pat_${RMSPI_PAT_VER}_linux_armhf.deb https://github.com/la5nta/pat/releases/download/v${RMSPI_PAT_VER}/pat_${RMSPI_PAT_VER}_linux_armhf.deb
   dpkg -i pat_${RMSPI_PAT_VER}_linux_armhf.deb
+  rm -f pat_${RMSPI_PAT_VER}_linux_armhf.deb
   systemctl_if_exists enable pat@pi.service
   if [ "$RMSPI_XYL" == "yes" ]
   then
