@@ -70,6 +70,9 @@ then
   then
     ln -s /usr/local/etc/rmsgw /etc/rmsgw
   fi
+
+  chown rmsgw:rmsgw /etc/rmsgw/{winlinkservice.xml,stat}
+
   # Add RMS_ACI to Crontab
   echo "6,36 *  * * *   rmsgw    /usr/local/bin/rmsgw_aci > /dev/null 2>&1" >> /etc/cron.d/rmspi
   # Install Logging
