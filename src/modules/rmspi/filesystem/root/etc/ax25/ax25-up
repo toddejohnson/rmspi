@@ -33,6 +33,8 @@ default * * * * * * -    rmsgw /usr/local/bin/rmsgw rmsgw -P 0 %U
 # /etc/ax25/ax25d.conf (End)
 EOF
 
+[ -d /etc/rmsgw ] || mkdir -p /etc/rmsgw
+
 cat << EOF > /etc/rmsgw/gateway.conf
 GWCALL=${CALL}${RMSSSID}
 GRIDSQUARE=${GRIDSQ}
