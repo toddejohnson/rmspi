@@ -66,6 +66,10 @@ then
       make install
     popd
   popd
+  if [ ! -d /etc/rmsgw ]
+  then
+    ln -s /usr/local/etc/rmsgw /etc/rmsgw
+  fi
   # Add RMS_ACI to Crontab
   echo "6,36 *  * * *   rmsgw    /usr/local/bin/rmsgw_aci > /dev/null 2>&1" >> /etc/cron.d/rmspi
   # Install Logging
