@@ -1,0 +1,4 @@
+Place zipped Raspberry Pi OS Lite 64-bit image here (arm64 / aarch64).
+
+If not otherwise specified, the build script will always use the most
+recent file matching the file name pattern "*-raspbian.zip", "*-raspbian.xz", "*-raspios*.zip", or "*-raspios*.xz" located here.

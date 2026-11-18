@@ -9,60 +9,81 @@
 source /common.sh
 install_cleanup_trap
 
-#unpack /filesystem/home/pi /home/pi pi
-#unpack /filesystem/home/root /root root
-unpack /filesystem/boot /boot
+# Detect boot directory (Bookworm uses /boot/firmware, older versions use /boot)
+BOOT_DIR="/boot"
+if [ -d "/boot/firmware" ]; then
+  BOOT_DIR="/boot/firmware"
+fi
 
+# Unpack boot filesystem overlay
+unpack /filesystem/boot "${BOOT_DIR}"
+
+# Provide backwards-compatible symlink so both /boot/rmspi.txt and /boot/firmware/rmspi.txt work
+if [ "${BOOT_DIR}" = "/boot/firmware" ] && [ -f "/boot/firmware/rmspi.txt" ]; then
+  ln -sf /boot/firmware/rmspi.txt /boot/rmspi.txt
+fi
 
 apt-get update
 
 # in case we are building from a regular raspbian image instead of the lite one...
 remove_extra=$(remove_if_installed scratch squeak-plugins-scratch squeak-vm wolfram-engine python-minecraftpi minecraft-pi sonic-pi oracle-java8-jdk bluej libreoffice-common libreoffice-core freepats greenfoot nodered)
-echo "removing:" $remove_extra
-apt-get remove -y --purge  $remove_extra
-apt-get autoremove -y
-apt-get -y install git tmux
+if [ -n "$remove_extra" ]; then
+  echo "removing:" $remove_extra
+  apt-get remove -y --purge $remove_extra
+  apt-get autoremove -y
+fi
 
-#Config for TNCPi
-sed -i 's/console=serial0,115200 //' /boot/cmdline.txt
-echo 'enable_uart=1' >> /boot/config.txt
+apt-get -y install git tmux net-tools psmisc
 
+# Config for TNCPi
+BOOT_CMDLINE="${BOOT_DIR}/cmdline.txt"
+BOOT_CONFIG="${BOOT_DIR}/config.txt"
+
+if [ -f "${BOOT_CMDLINE}" ]; then
+  sed -i 's/console=serial0,115200 //' "${BOOT_CMDLINE}"
+fi
+
+if [ -f "${BOOT_CONFIG}" ]; then
+  if ! grep -q "^enable_uart=1" "${BOOT_CONFIG}"; then
+    echo 'enable_uart=1' >> "${BOOT_CONFIG}"
+  fi
+fi
 
 echo "--- Installing AX25"
 apt-get -y install libax25 ax25-tools ax25-apps
-
-
 
 if [ "$RMSPI_INCLUDE_RMSGW" == "yes" ]
 then
   echo "--- Installing RMSGW"
   
-  #  create the group for the gateway
+  # create the group for the gateway if not existing
   echo "Creating group rmsgw..."
-	groupadd rmsgw
+  getent group rmsgw >/dev/null || groupadd rmsgw
 
-  #  create the gateway user
+  # create the gateway user if not existing
   echo "Creating user rmsgw..."
- 	useradd -s /bin/false -g rmsgw rmsgw
+  id -u rmsgw >/dev/null 2>&1 || useradd -s /bin/false -g rmsgw rmsgw
 
-  # lock the account to prevent a potential hole, unless the
-  # owner is root
-	echo "Locking user account rmsgw..."
-	passwd -l rmsgw >/dev/null
-	# while the account is locked, make the password to
-	# never expire so that cron will be happy
-	chage -E-1 rmsgw >/dev/null
+  # lock the account to prevent a potential hole, unless the owner is root
+  echo "Locking user account rmsgw..."
+  passwd -l rmsgw >/dev/null
+  # while the account is locked, make the password never expire so that cron will be happy
+  chage -E-1 rmsgw >/dev/null
   
   echo "Installing RMSGW Deps"
-  apt-get -y install xutils-dev libxml2 libxml2-dev python-requests build-essential libax25-dev libx11-dev zlib1g-dev libncurses5-dev binutils make csh g++ sed gawk autoconf automake autotools-dev
+  apt-get -y install xutils-dev libxml2 libxml2-dev python3 python3-requests python3-packaging python3-urllib3 build-essential libax25-dev libx11-dev zlib1g-dev libncurses-dev binutils make csh g++ sed gawk autoconf automake autotools-dev
   echo "Deps Installed"
   
-  pushd  /home/pi/
+  TARGET_USER="${BASE_USER:-pi}"
+  TARGET_HOME="/home/${TARGET_USER}"
+  mkdir -p "${TARGET_HOME}"
+  pushd "${TARGET_HOME}"
     gitclone RMSPI_RMSGW_REPO rmsgw
     pushd rmsgw
-      sudo -u pi ./autogen.sh
-      sudo -u pi ./configure
-      sudo -u pi make
+      chown -R "${TARGET_USER}:${TARGET_USER}" .
+      sudo -u "${TARGET_USER}" ./autogen.sh
+      sudo -u "${TARGET_USER}" ./configure
+      sudo -u "${TARGET_USER}" make
       make install
     popd
   popd
@@ -71,7 +92,9 @@ then
     ln -s /usr/local/etc/rmsgw /etc/rmsgw
   fi
 
-  chown rmsgw:rmsgw /etc/rmsgw/{winlinkservice.xml,stat}
+  chown -R rmsgw:rmsgw /usr/local/etc/rmsgw 2>/dev/null || true
+  [ -f /etc/rmsgw/winlinkservice.xml ] && chown rmsgw:rmsgw /etc/rmsgw/winlinkservice.xml
+  [ -f /etc/rmsgw/stat ] && chown rmsgw:rmsgw /etc/rmsgw/stat
 
   # Add RMS_ACI to Crontab
   echo "6,36 *  * * *   rmsgw    /usr/local/bin/rmsgw_aci > /dev/null 2>&1" >> /etc/cron.d/rmspi
@@ -88,14 +111,45 @@ fi
 
 if [ "$RMSPI_XYL" == "yes" ]
 then
-   	useradd -G pi,adm,dialout,cdrom,sudo,audio,video,plugdev,games,users,input,netdev,gpio,i2c,spi xyl
+  if ! id -u xyl >/dev/null 2>&1; then
+    EXISTING_GROUPS=""
+    for g in pi adm dialout cdrom sudo audio video plugdev games users input netdev gpio i2c spi; do
+      if getent group "$g" >/dev/null; then
+        EXISTING_GROUPS="${EXISTING_GROUPS}${EXISTING_GROUPS:+,}$g"
+      fi
+    done
+    useradd -m -s /bin/bash ${EXISTING_GROUPS:+-G $EXISTING_GROUPS} xyl
+  fi
 fi
+
 if [ "$RMSPI_INCLUDE_PAT" == "yes" ]
 then
-  wget -O pat_${RMSPI_PAT_VER}_linux_armhf.deb https://github.com/la5nta/pat/releases/download/v${RMSPI_PAT_VER}/pat_${RMSPI_PAT_VER}_linux_armhf.deb
-  dpkg -i pat_${RMSPI_PAT_VER}_linux_armhf.deb
-  rm -f pat_${RMSPI_PAT_VER}_linux_armhf.deb
-  systemctl_if_exists enable pat@pi.service
+  DEB_ARCH="$(dpkg --print-architecture)"
+  case "$DEB_ARCH" in
+    arm64|aarch64)
+      PAT_ARCH="arm64"
+      ;;
+    armhf|armv7l|armv6l)
+      PAT_ARCH="armhf"
+      ;;
+    amd64|x86_64)
+      PAT_ARCH="amd64"
+      ;;
+    *)
+      PAT_ARCH="armhf"
+      ;;
+  esac
+
+  PAT_DEB="pat_${RMSPI_PAT_VER}_linux_${PAT_ARCH}.deb"
+  PAT_URL="https://github.com/la5nta/pat/releases/download/v${RMSPI_PAT_VER}/${PAT_DEB}"
+
+  echo "--- Installing PAT (${PAT_DEB})"
+  wget -O "${PAT_DEB}" "${PAT_URL}"
+  dpkg -i "${PAT_DEB}" || apt-get install -fy
+  rm -f "${PAT_DEB}"
+
+  TARGET_USER="${BASE_USER:-pi}"
+  systemctl_if_exists enable "pat@${TARGET_USER}.service"
   if [ "$RMSPI_XYL" == "yes" ]
   then
     systemctl_if_exists enable pat@xyl.service
@@ -109,11 +163,11 @@ echo "---Enable AX.25"
 systemctl_if_exists enable ax25.service
 
 ### Fix SSH
-echo "IPQoS 0x00" >> /etc/ssh/sshd_config
+grep -q "IPQoS" /etc/ssh/sshd_config 2>/dev/null || echo "IPQoS 0x00" >> /etc/ssh/sshd_config
 
 ### Try and fix https://github.com/guysoft/OctoPi/issues/424
 ### Thanks guysoft/OctoPi!
-sed -i "s@ExecStart=/usr/bin/ssh-keygen -A -v@ExecStart=/bin/bash -c ' /usr/bin/ssh-keygen -A -v >> /var/log/regenerate_ssh_host_keys.log 2>\&1'@g" /lib/systemd/system/regenerate_ssh_host_keys.service
-sed -i "s@ExecStartPost=/bin/systemctl disable regenerate_ssh_host_keys@ExecStartPost=/bin/bash -c 'for i in /etc/ssh/ssh_host_*_key*; do actualsize=\$(wc -c <\"\$i\") ;if [ \$actualsize -eq 0 ]; then echo size is 0 bytes ; exit 1 ; fi ; done ; /bin/systemctl disable regenerate_ssh_host_keys'@g" /lib/systemd/system/regenerate_ssh_host_keys.service
-
-
+if [ -f /lib/systemd/system/regenerate_ssh_host_keys.service ]; then
+  sed -i "s@ExecStart=/usr/bin/ssh-keygen -A -v@ExecStart=/bin/bash -c ' /usr/bin/ssh-keygen -A -v >> /var/log/regenerate_ssh_host_keys.log 2>\&1'@g" /lib/systemd/system/regenerate_ssh_host_keys.service
+  sed -i "s@ExecStartPost=/bin/systemctl disable regenerate_ssh_host_keys@ExecStartPost=/bin/bash -c 'for i in /etc/ssh/ssh_host_*_key*; do actualsize=\$(wc -c <\"\$i\") ;if [ \$actualsize -eq 0 ]; then echo size is 0 bytes ; exit 1 ; fi ; done ; /bin/systemctl disable regenerate_ssh_host_keys'@g" /lib/systemd/system/regenerate_ssh_host_keys.service
+fi

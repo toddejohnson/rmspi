@@ -1,3 +1,7 @@
 export DIST_NAME=RMSPi
-export DIST_VERSION=0.4
+export DIST_VERSION=0.5
 export MODULES="base(network,rmspi)"
+
+export BASE_IMAGE_ENLARGEROOT=1500
+export BASE_IMAGE_RESIZEROOT=200
+

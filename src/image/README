@@ -1,5 +1,4 @@
-Place zipped Rasbian image here.
+Place zipped Raspberry Pi OS Lite image here (32-bit / armhf).
 
 If not otherwise specified, the build script will always use the most
-recent zip file matching the file name pattern "*-raspbian.zip" located
-here.
+recent file matching the file name pattern "*-raspbian.zip", "*-raspbian.xz", "*-raspios*.zip", or "*-raspios*.xz" located here.

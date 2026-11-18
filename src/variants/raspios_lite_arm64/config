@@ -1,0 +1,8 @@
+BASE_ARCH=arm64
+BASE_BOARD=raspberrypiarm64
+BASE_OS=debian_bookworm
+BASE_IMAGE_PATH=${DIST_PATH}/image-raspios_lite_arm64
+BASE_ZIP_IMG=`ls -t $BASE_IMAGE_PATH/*-{raspbian,raspios}-*-arm64-*.{zip,xz} 2>/dev/null | head -n 1`
+BASE_IGNORE_VARIANT_NAME=yes
+BASE_IMAGE_ENLARGEROOT=1500
+BASE_IMAGE_RESIZEROOT=200

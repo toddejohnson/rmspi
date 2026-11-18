@@ -9,8 +9,11 @@ sysctl -wq kernel.panic_on_oops=30
 # Set defaults
 BEACONINT=60
 
-#Configure from /boot/rmspi.txt
-if [ -e "/boot/rmspi.txt" ]; then
+#Configure from /boot/firmware/rmspi.txt or /boot/rmspi.txt
+if [ -e "/boot/firmware/rmspi.txt" ]; then
+    echo "Using config from /boot/firmware/rmspi.txt"
+    source "/boot/firmware/rmspi.txt"
+elif [ -e "/boot/rmspi.txt" ]; then
     echo "Using config from /boot/rmspi.txt"
     source "/boot/rmspi.txt"
 fi
@@ -33,6 +36,8 @@ default * * * * * * -    rmsgw /usr/local/bin/rmsgw rmsgw -P 0 %U
 # /etc/ax25/ax25d.conf (End)
 EOF
 
+PYTHON=$(command -v python3 || command -v python || echo "/usr/bin/python3")
+
 cat << EOF > /etc/rmsgw/gateway.conf
 GWCALL=${CALL}${RMSSSID}
 GRIDSQUARE=${GRIDSQ}
@@ -40,7 +45,7 @@ CHANNELFILE=/etc/rmsgw/channels.xml
 BANNERFILE=/etc/rmsgw/banner
 LOGFACILITY=LOCAL0
 LOGMASK=INFO
-PYTHON=/usr/bin/python
+PYTHON=${PYTHON}
 EOF
 
 echo "${RMSBANNER}" > /etc/rmsgw/banner
@@ -112,7 +117,7 @@ cat << EOF > /etc/rmsgw/new-sysop.xml
 </sysops>
 EOF
 
-[ -d /home/pi/.wl2k ] || mkdir -p /home/pi/.wl2k
+mkdir -p /home/pi/.config/pat /home/pi/.wl2k
 if [ -z ${PATSCHEDULE+x} ]
 then
   SCHED="\"schedule\": {},"
@@ -120,7 +125,7 @@ else
   SCHED="\"schedule\": {\"${PATSCHEDULE}\": \"connect ${PATSCHEDULECONNECT}\"},"
 fi
 
-cat << EOF > /home/pi/.wl2k/config.json
+cat << EOF > /home/pi/.config/pat/config.json
 {
   "mycall": "${CALL}",
   "secure_login_password": "${RMSPASSWORD}",
@@ -152,16 +157,17 @@ cat << EOF > /home/pi/.wl2k/config.json
   "version_reporting_disabled": false
 }
 EOF
-chown -R pi:pi /home/pi/.wl2k/
+ln -sf /home/pi/.config/pat/config.json /home/pi/.wl2k/config.json
+chown -R pi:pi /home/pi/.config /home/pi/.wl2k
 
 if [ -z "${XYLCALL}" ]
 then
   systemctl disable pat@xyl.service
 else
   systemctl enable pat@xyl.service
-  [ -d /home/xyl/.wl2k ] || mkdir -p /home/xyl/.wl2k
+  mkdir -p /home/xyl/.config/pat /home/xyl/.wl2k
 
-  cat << EOF > /home/xyl/.wl2k/config.json
+  cat << EOF > /home/xyl/.config/pat/config.json
 {
   "mycall": "${XYLCALL}",
   "secure_login_password": "${XYLRMSPASSWORD}",
@@ -189,7 +195,8 @@ else
   "version_reporting_disabled": false
 }
 EOF
-  chown -R xyl:pi /home/xyl/.wl2k/
+  ln -sf /home/xyl/.config/pat/config.json /home/xyl/.wl2k/config.json
+  chown -R xyl:pi /home/xyl/.config /home/xyl/.wl2k
 fi
 
 # Port0 (Start)

@@ -8,7 +8,7 @@ FREQ="146.610"
 RMSFREQ="145610000"
 # Grid square for RMS GW
 GRIDSQ="AA00aa"
-# Serial port of TNC
+# Serial port of TNC (e.g. /dev/ttyAMA0 or /dev/serial0)
 AX25DEV="/dev/ttyAMA0"
 # Baud of above serial port
 AX25BAUD=19200
